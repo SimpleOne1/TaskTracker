@@ -9,7 +9,7 @@ import java.util.Collection;
 
 @Service
 public class TaskService {
-    private int id =0;
+    private long id =0;
 
     private final TaskDAO taskDAO;
 
@@ -17,19 +17,27 @@ public class TaskService {
         this.taskDAO = taskDAO;
     }
 
-    public void saveTask(Task task){
-        if(task.getId()==null){
+    public boolean saveTask(Task task){
+        if(Long.valueOf(task.getId())==null){
             task.setId(++id);
         }
+
+        if(task.getAssignee()!=null){
+
+        }
+        if(task.getDescription()==null || task.getTitle()==null){
+            return false;
+        }
         taskDAO.save(task);
+        return true;
     }
-    public void deleteTask(Integer id){
+    public void deleteTask(long id){
         taskDAO.delete(id);
     }
     public void deleteAll(){
         taskDAO.deleteAll();
     }
-    public void editTask(Integer id,String text){
+    public void editTask(long id,String text){
         taskDAO.edit(id,text);
     }
     public Collection<Task> getAll(){

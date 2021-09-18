@@ -11,19 +11,28 @@ import java.util.Map;
 public class TaskDaoInMemImpl implements TaskDAO {
 
 
-    private final Map<Integer, Task> taskStorage = new HashMap<>();
+    private final Map<Long, Task> taskStorage = new HashMap<>();
 
     public TaskDaoInMemImpl() {
     }
 
     @Override
-    public Integer save(Task task) {
+    public boolean setAssignee(Long id,String assignee) {
+        if(assignee.isEmpty()){
+            return false;
+        }
+        taskStorage.get(id).setAssignee(assignee);
+        return true;
+    }
+
+    @Override
+    public long save(Task task) {
         taskStorage.put(task.getId(),task);
         return task.getId();
     }
 
     @Override
-    public void delete(Integer id) {
+    public void delete(long id) {
         taskStorage.remove(id);
     }
 
@@ -33,8 +42,8 @@ public class TaskDaoInMemImpl implements TaskDAO {
     }
 
     @Override
-    public void edit(Integer id,String text) {
-        taskStorage.get(id).setText(text);
+    public void edit(long id,String text) {
+        taskStorage.get(id).setTitle(text);
     }
 
     @Override
