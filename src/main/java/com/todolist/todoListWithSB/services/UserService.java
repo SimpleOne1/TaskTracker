@@ -54,9 +54,6 @@ public class UserService {
     public void edit(Long id, User user) {
         User oldUser = userDAO.get(id);
         if (user.getEmail() != null && !uniqueEmails.contains(user.getEmail())) {
-            if (oldUser.getEmail() != null) {
-                uniqueEmails.remove(oldUser.getEmail());
-            }
             oldUser.setEmail(user.getEmail());
         }
         if (user.getName() != null) {
