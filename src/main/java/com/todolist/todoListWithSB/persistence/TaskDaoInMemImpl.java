@@ -17,17 +17,13 @@ public class TaskDaoInMemImpl implements TaskDAO {
     }
 
     @Override
-    public boolean setAssignee(Long id,String assignee) {
-        if(assignee.isEmpty()){
-            return false;
-        }
-        taskStorage.get(id).setAssignee(assignee);
-        return true;
+    public void setAssignee(Long taskId, Long assigneeId) {
+        taskStorage.get(taskId).setAssignee(assigneeId);
     }
 
     @Override
     public long save(Task task) {
-        taskStorage.put(task.getId(),task);
+        taskStorage.put(task.getId(), task);
         return task.getId();
     }
 
@@ -42,12 +38,17 @@ public class TaskDaoInMemImpl implements TaskDAO {
     }
 
     @Override
-    public void edit(long id,String text) {
-        taskStorage.get(id).setTitle(text);
+    public void edit(long id, Task task) {
+        taskStorage.put(id, task);
     }
 
     @Override
     public Collection<Task> getAll() {
         return taskStorage.values();
+    }
+
+    @Override
+    public Task get(long id) {
+        return taskStorage.get(id);
     }
 }

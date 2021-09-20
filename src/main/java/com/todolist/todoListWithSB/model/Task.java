@@ -1,17 +1,28 @@
 package com.todolist.todoListWithSB.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 public class Task {
 
 
-    private long  id;
+    private long id;
 
     private String title;
 
     private String description;
 
-    private String reporter;
+    private Long reporter;
 
-    private String assignee;
+    private Long assignee;
+
+    @JsonCreator
+    public Task(long id, String title, String description, Long reporter, Long assignee) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.reporter = reporter;
+        this.assignee = assignee;
+    }
 
     public long getId() {
         return id;
@@ -37,19 +48,19 @@ public class Task {
         this.description = description;
     }
 
-    public String getReporter() {
+    public Long getReporter() {
         return reporter;
     }
 
-    public void setReporter(String reporter) {
+    public void setReporter(Long reporter) {
         this.reporter = reporter;
     }
 
-    public String getAssignee() {
+    public Long getAssignee() {
         return assignee;
     }
 
-    public void setAssignee(String assignee) {
+    public void setAssignee(Long assignee) {
         this.assignee = assignee;
     }
 }

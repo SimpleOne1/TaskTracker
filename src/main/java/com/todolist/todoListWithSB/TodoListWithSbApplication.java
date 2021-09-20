@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class TodoListWithSbApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(TodoListWithSbApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(TodoListWithSbApplication.class, args);
+    }
 
 }

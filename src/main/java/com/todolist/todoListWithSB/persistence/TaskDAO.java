@@ -11,14 +11,16 @@ public interface TaskDAO {
 
     long save(Task task);
 
-    boolean setAssignee(Long id,String assignee);
+    void setAssignee(Long id, Long assignee);
 
     void delete(long id);
 
-    void edit(long id, String text);
+    void edit(long id, Task task);
 
     void deleteAll();
 
     Collection<Task> getAll();
+
+    Task get(long id);
 
 }

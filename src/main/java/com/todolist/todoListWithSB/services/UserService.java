@@ -2,16 +2,18 @@ package com.todolist.todoListWithSB.services;
 
 import com.todolist.todoListWithSB.model.User;
 import com.todolist.todoListWithSB.persistence.UserDAO;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+@Service
 public class UserService {
 
     private long id = 1000;
 
-    private Set<String> uniqueEmails= new HashSet<>();
+    private Set<String> uniqueEmails = new HashSet<>();
 
     private final UserDAO userDAO;
 
@@ -23,7 +25,7 @@ public class UserService {
         if (Long.valueOf(user.getId()).equals(null)) {
             user.setId(id++);
         }
-        if(uniqueEmails.contains(user.getEmail())){
+        if (uniqueEmails.contains(user.getEmail())) {
             return false;
         }
         uniqueEmails.add(user.getEmail());
@@ -50,6 +52,19 @@ public class UserService {
     }
 
     public void edit(Long id, User user) {
-        userDAO.edit(id, user);
+        User oldUser = userDAO.get(id);
+        if (user.getEmail() != null && !uniqueEmails.contains(user.getEmail())) {
+            if (oldUser.getEmail() != null) {
+                uniqueEmails.remove(oldUser.getEmail());
+            }
+            oldUser.setEmail(user.getEmail());
+        }
+        if (user.getName() != null) {
+            oldUser.setName(user.getName());
+        }
+        if (user.getTasks() != null) {
+            oldUser.setTasks(user.getTasks());
+        }
+        userDAO.edit(id, oldUser);
     }
 }
