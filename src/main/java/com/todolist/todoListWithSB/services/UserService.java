@@ -1,11 +1,14 @@
 package com.todolist.todoListWithSB.services;
 
+import com.todolist.todoListWithSB.model.Task;
 import com.todolist.todoListWithSB.model.User;
+import com.todolist.todoListWithSB.persistence.TaskDAO;
 import com.todolist.todoListWithSB.persistence.UserDAO;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -16,9 +19,11 @@ public class UserService {
     private Set<String> uniqueEmails = new HashSet<>();
 
     private final UserDAO userDAO;
+    private final TaskDAO taskDAO;
 
-    public UserService(UserDAO userDAO) {
+    public UserService(UserDAO userDAO,TaskDAO taskDAO) {
         this.userDAO = userDAO;
+        this.taskDAO=taskDAO;
     }
 
     public boolean saveUser(User user) {
@@ -48,6 +53,13 @@ public class UserService {
     }
 
     public User get(Long id) {
+        List<Long> tasks = new ArrayList<>();
+        for(Task task: taskDAO.getAll()){
+            if(task.getAssignee()==id){
+                tasks.add(task.getId());
+            }
+        }
+        userDAO.get(id).setTasks(tasks);
         return userDAO.get(id);
     }
 
