@@ -1,10 +1,13 @@
-package com.todolist.todoListWithSB.controller;
+package com.education.controller;
 
-import com.todolist.todoListWithSB.model.User;
-import com.todolist.todoListWithSB.services.UserService;
+import com.education.model.User;
+import com.education.model.UserAdjustment;
+import com.education.model.UserTasks;
+import com.education.services.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("users")
@@ -18,22 +21,22 @@ public class UserController {
 
     //works
     @GetMapping
-    public ArrayList<User> getAll() {
+    public List<User> getAll() {
         return userService.getAll();
     }
 
     @GetMapping("{id}")
-    public User get(@PathVariable(value = "id") long id) {
+    public UserTasks get(@PathVariable(value = "id") long id) {
         return userService.get(id);
     }
 
     @PostMapping
-    public void save(@RequestBody User user) {
-        userService.saveUser(user);
+    public User save(@RequestBody User user) {
+       return userService.saveUser(user);
     }
 
     @PostMapping("{id}")
-    public void update(@PathVariable(value = "id") long id, @RequestBody User user) {
+    public void update(@PathVariable(value = "id") long id, @RequestBody UserAdjustment user) {
         userService.edit(id, user);
     }
 

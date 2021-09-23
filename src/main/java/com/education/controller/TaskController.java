@@ -1,18 +1,17 @@
-package com.todolist.todoListWithSB.controller;
+package com.education.controller;
 
-import com.todolist.todoListWithSB.model.Task;
-import com.todolist.todoListWithSB.services.TaskService;
+import com.education.model.Task;
+import com.education.services.TaskService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
-import java.util.List;
 
 @RestController
-@RequestMapping("users/{userId}/task")
-public class UserTaskController {
+@RequestMapping("tasks")
+public class TaskController {
     private final TaskService service;
 
-    public UserTaskController(TaskService taskService) {
+    public TaskController(TaskService taskService) {
         this.service = taskService;
     }
 
@@ -28,13 +27,8 @@ public class UserTaskController {
     }
 
     @PostMapping
-    public void save(@RequestBody Task task, @PathVariable(value = "userId") long id) {
-        service.saveTask(task, id);
-    }
-
-    @PostMapping("{taskId}/{assigneeId}")
-    public void setAssignee(@PathVariable(value = "taskId") long taskId, @PathVariable(value = "assigneeId") long assigneeId) {
-        service.setAssignee(taskId, assigneeId);
+    public Task save(@RequestBody Task task) {
+        return service.saveTask(task);
     }
 
     @PostMapping ("{taskId}")

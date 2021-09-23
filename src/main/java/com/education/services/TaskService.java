@@ -1,12 +1,15 @@
-package com.todolist.todoListWithSB.services;
+package com.education.services;
 
 
-import com.todolist.todoListWithSB.model.Task;
-import com.todolist.todoListWithSB.persistence.TaskDAO;
-import com.todolist.todoListWithSB.persistence.UserDAO;
+import com.education.model.User;
+import com.education.model.UserTasks;
+import com.education.persistence.UserDAO;
+import com.education.model.Task;
+import com.education.persistence.TaskDAO;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Service
@@ -21,39 +24,30 @@ public class TaskService {
         this.userDAO = userDAO;
     }
 
-    public boolean saveTask(Task task, long reporterId) {
-        if (task.getId() == 0) {
-            task.setId(atomicLong.incrementAndGet());
-        }
+    public Task saveTask(Task task) {
         if (task.getReporter() == null) {
-            task.setReporter(reporterId);
-        } else if (userDAO.get(reporterId).isDeleted()) {
-            return false;
+            throw new IllegalArgumentException();
+        }
+        Long reporterId = task.getReporter();
+        if (userDAO.get(reporterId).isDeleted()) {
+            throw new IllegalArgumentException();
         }
         if (task.getAssignee() != null && userDAO.get(task.getAssignee()).isDeleted()) {
-            return false;
+            throw new IllegalArgumentException();
         }
         if (task.getDescription() == null || task.getTitle() == null) {
-            return false;
+            throw new IllegalArgumentException();
         }
-        taskDAO.save(task);
-        return true;
+        long savedId = taskDAO.save(task);
+        task.setId(savedId);
+        return task;
     }
 
-    public boolean setAssignee(Long taskId, Long assigneeId) {
-        if (assigneeId == null) {
-            return false;
+    public void setAssignee(Long taskId, Long assigneeId) {
+        if (assigneeId != null && userDAO.get(assigneeId).isDeleted()) {
+            throw new IllegalArgumentException();
         }
         taskDAO.setAssignee(taskId, assigneeId);
-        return true;
-    }
-
-    public void deleteTask(long id) {
-        taskDAO.delete(id);
-    }
-
-    public void deleteAll() {
-        taskDAO.deleteAll();
     }
 
     public void editTask(long id, Task task) {
@@ -73,6 +67,15 @@ public class TaskService {
 
     public Collection<Task> getAll() {
         return taskDAO.getAll();
+    }
+
+    public UserTasks getUserTasks(long userId){
+        User user = userDAO.get(userId);
+        List<Task> tasks = taskDAO.getByAssignee(userId);
+        UserTasks userTasks = new UserTasks();
+        userTasks.setUser(user);
+        userTasks.setTasks(tasks);
+        return userTasks;
     }
 
     public Task get(long id) {

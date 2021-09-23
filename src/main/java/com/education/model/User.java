@@ -1,4 +1,4 @@
-package com.todolist.todoListWithSB.model;
+package com.education.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -7,7 +7,7 @@ import java.util.List;
 
 public class User {
 
-    private long id;
+    private Long id;
 
     private String name;
 
@@ -15,7 +15,6 @@ public class User {
 
     private boolean deleted;
 
-    private List<Long> tasks;
 
 
     @JsonCreator
@@ -24,25 +23,16 @@ public class User {
         this.name = name;
         this.email = email;
         this.deleted = deleted;
-        this.tasks = tasks;
     }
 
     public User() {
     }
 
-    public List<Long> getTasks() {
-        return tasks;
-    }
-
-    public void setTasks(List<Long> tasks) {
-        this.tasks = tasks;
-    }
-
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

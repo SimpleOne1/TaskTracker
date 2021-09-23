@@ -1,10 +1,11 @@
-package com.todolist.todoListWithSB.persistence;
+package com.education.persistence;
 
 
-import com.todolist.todoListWithSB.model.Task;
+import com.education.model.Task;
 
 
 import java.util.Collection;
+import java.util.List;
 
 
 public interface TaskDAO {
@@ -13,14 +14,12 @@ public interface TaskDAO {
 
     void setAssignee(Long id, Long assignee);
 
-    void delete(long id);
-
     void edit(long id, Task task);
-
-    void deleteAll();
 
     Collection<Task> getAll();
 
     Task get(long id);
+
+    List<Task> getByAssignee(long userId);
 
 }

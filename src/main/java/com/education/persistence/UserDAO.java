@@ -1,6 +1,6 @@
-package com.todolist.todoListWithSB.persistence;
+package com.education.persistence;
 
-import com.todolist.todoListWithSB.model.User;
+import com.education.model.User;
 
 
 import java.util.Collection;
@@ -11,9 +11,10 @@ public interface UserDAO {
 
     void edit(long id, User user);
 
-    void delete(long id);
 
     User get(long id);
+
+    User getByEmail(String email);
 
     Collection<User> getAll();
 }

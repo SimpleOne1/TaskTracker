@@ -1,11 +1,11 @@
-package com.todolist.todoListWithSB.model;
+package com.education.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 public class Task {
 
 
-    private long id;
+    private Long id;
 
     private String title;
 
@@ -24,11 +24,11 @@ public class Task {
         this.assignee = assignee;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

@@ -1,13 +1,13 @@
-package com.todolist.todoListWithSB;
+package com.education;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class TodoListWithSbApplication {
+public class ApplicationMain {
 
     public static void main(String[] args) {
-        SpringApplication.run(TodoListWithSbApplication.class, args);
+        SpringApplication.run(ApplicationMain.class, args);
     }
 
 }
