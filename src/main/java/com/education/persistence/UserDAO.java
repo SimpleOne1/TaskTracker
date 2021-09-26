@@ -11,7 +11,6 @@ public interface UserDAO {
 
     void edit(long id, User user);
 
-
     User get(long id);
 
     User getByEmail(String email);

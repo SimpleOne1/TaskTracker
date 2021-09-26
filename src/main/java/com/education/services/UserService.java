@@ -6,6 +6,9 @@ import com.education.model.UserAdjustment;
 import com.education.model.UserTasks;
 import com.education.persistence.TaskDAO;
 import com.education.persistence.UserDAO;
+import com.education.services.exceptions.TaskNotFoundException;
+import com.education.services.exceptions.UniqueEmailException;
+import com.education.services.exceptions.UserNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -24,7 +27,7 @@ public class UserService {
     public User saveUser(User user) {
         User byEmail = userDAO.getByEmail(user.getEmail());
         if (byEmail != null) {
-            throw new IllegalArgumentException();
+            throw new UniqueEmailException();
         }
         long id = userDAO.save(user);
         user.setId(id);
@@ -44,7 +47,7 @@ public class UserService {
     public void delete(Long id) {
         User user = userDAO.get(id);
         if(user==null){
-            throw new IllegalArgumentException();
+            throw new UserNotFoundException(id);
         }
         user.setDeleted(true);
         userDAO.edit(id,user);
@@ -52,20 +55,31 @@ public class UserService {
 
     public UserTasks get(Long id) {
         UserTasks userTasks = new UserTasks();
-        userTasks.setUser(userDAO.get(id));
-        userTasks.setTasks(taskDAO.getByAssignee(id));
+        User user = userDAO.get(id);
+        if(user == null){
+            throw new UserNotFoundException(id);
+        }
+        userTasks.setUser(user);
+        List<Task> tasks = taskDAO.getByAssignee(id);
+        if(tasks == null){
+            throw new TaskNotFoundException(id);
+        }
+        userTasks.setTasks(tasks);
         return userTasks;
     }
 
     public void edit(Long id, UserAdjustment user) {
         User oldUser = userDAO.get(id);
+        if(oldUser == null){
+            throw new UserNotFoundException(id);
+        }
         if (user.getEmail() != null) {
             User byEmail = userDAO.getByEmail(user.getEmail());
             if (byEmail != null) {
                 if(Objects.equals(byEmail.getId(),id)){
-                    throw new IllegalArgumentException("email duplicated");
+                    throw new UniqueEmailException("email duplicated");
                 }
-                throw new IllegalArgumentException("email is same");
+                throw new UniqueEmailException("email is same");
             } else {
                 oldUser.setEmail(user.getEmail());
             }
