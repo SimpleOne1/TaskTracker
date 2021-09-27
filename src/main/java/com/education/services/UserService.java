@@ -1,9 +1,6 @@
 package com.education.services;
 
-import com.education.model.Task;
-import com.education.model.User;
-import com.education.model.UserAdjustment;
-import com.education.model.UserTasks;
+import com.education.model.*;
 import com.education.persistence.TaskDAO;
 import com.education.persistence.UserDAO;
 import com.education.services.exceptions.TaskNotFoundException;
@@ -19,9 +16,9 @@ public class UserService {
     private final UserDAO userDAO;
     private final TaskDAO taskDAO;
 
-    public UserService(UserDAO userDAO,TaskDAO taskDAO) {
+    public UserService(UserDAO userDAO, TaskDAO taskDAO) {
         this.userDAO = userDAO;
-        this.taskDAO=taskDAO;
+        this.taskDAO = taskDAO;
     }
 
     public User saveUser(User user) {
@@ -46,22 +43,22 @@ public class UserService {
 
     public void delete(Long id) {
         User user = userDAO.get(id);
-        if(user==null){
+        if (user == null) {
             throw new UserNotFoundException(id);
         }
         user.setDeleted(true);
-        userDAO.edit(id,user);
+        userDAO.edit(id, user);
     }
 
     public UserTasks get(Long id) {
         UserTasks userTasks = new UserTasks();
         User user = userDAO.get(id);
-        if(user == null){
+        if (user == null) {
             throw new UserNotFoundException(id);
         }
         userTasks.setUser(user);
         List<Task> tasks = taskDAO.getByAssignee(id);
-        if(tasks == null){
+        if (tasks == null) {
             throw new TaskNotFoundException(id);
         }
         userTasks.setTasks(tasks);
@@ -70,13 +67,13 @@ public class UserService {
 
     public void edit(Long id, UserAdjustment user) {
         User oldUser = userDAO.get(id);
-        if(oldUser == null){
+        if (oldUser == null) {
             throw new UserNotFoundException(id);
         }
         if (user.getEmail() != null) {
             User byEmail = userDAO.getByEmail(user.getEmail());
             if (byEmail != null) {
-                if(Objects.equals(byEmail.getId(),id)){
+                if (Objects.equals(byEmail.getId(), id)) {
                     throw new UniqueEmailException("email duplicated");
                 }
                 throw new UniqueEmailException("email is same");
@@ -88,5 +85,10 @@ public class UserService {
             oldUser.setName(user.getName());
         }
         userDAO.edit(id, oldUser);
+    }
+
+    public User createFromRequest(CreateUserRequest request) {
+        ;
+        return userDAO.createUserFromRequest(request);
     }
 }

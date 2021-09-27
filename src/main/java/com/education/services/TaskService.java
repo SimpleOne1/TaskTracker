@@ -1,6 +1,7 @@
 package com.education.services;
 
 
+import com.education.model.CreateUserRequest;
 import com.education.model.User;
 import com.education.model.UserTasks;
 import com.education.persistence.UserDAO;
@@ -94,5 +95,6 @@ public class TaskService {
         }
         return task;
     }
+
 
 }

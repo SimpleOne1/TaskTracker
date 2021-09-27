@@ -1,11 +1,6 @@
 package com.education.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.List;
-
-public class User {
+public class CreateUserRequest {
 
     private Long id;
 
@@ -15,18 +10,12 @@ public class User {
 
     private boolean deleted;
 
-
-    @JsonCreator
-    public User(@JsonProperty(required = false) long id, String name, String email, boolean deleted) {
+    public CreateUserRequest(Long id, String name, String email, boolean deleted) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.deleted = deleted;
     }
-
-    public User() {
-    }
-
 
     public Long getId() {
         return id;
