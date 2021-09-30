@@ -1,27 +1,39 @@
 package com.education.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import org.springframework.lang.Nullable;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 
 public class Task {
 
 
     private Long id;
 
+    @NotBlank
     private String title;
 
+    @NotBlank
     private String description;
 
+    @NotNull
     private Long reporter;
 
+    @Nullable
     private Long assignee;
 
-    @JsonCreator
+
     public Task(long id, String title, String description, Long reporter, Long assignee) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.reporter = reporter;
         this.assignee = assignee;
+    }
+
+    public Task() {
     }
 
     public Long getId() {

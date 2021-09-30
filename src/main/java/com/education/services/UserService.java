@@ -43,7 +43,7 @@ public class UserService {
 
     public void delete(Long id) {
         User user = userDAO.get(id);
-        if (user == null) {
+        if (user == null ) {
             throw new UserNotFoundException(id);
         }
         user.setDeleted(true);
@@ -53,14 +53,11 @@ public class UserService {
     public UserTasks get(Long id) {
         UserTasks userTasks = new UserTasks();
         User user = userDAO.get(id);
-        if (user == null) {
+        if (user == null || user.isDeleted()) {
             throw new UserNotFoundException(id);
         }
         userTasks.setUser(user);
         List<Task> tasks = taskDAO.getByAssignee(id);
-        if (tasks == null) {
-            throw new TaskNotFoundException(id);
-        }
         userTasks.setTasks(tasks);
         return userTasks;
     }
@@ -87,8 +84,8 @@ public class UserService {
         userDAO.edit(id, oldUser);
     }
 
-    public User createFromRequest(CreateUserRequest request) {
-        ;
-        return userDAO.createUserFromRequest(request);
-    }
+//    public User createFromRequest(CreateUserRequest request) {
+//        ;
+//        return userDAO.createUserFromRequest(request);
+//    }
 }

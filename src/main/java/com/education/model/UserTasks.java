@@ -1,10 +1,13 @@
 package com.education.model;
 
+
+
 import java.util.List;
 
 public class UserTasks {
     private User user;
     private List<Task> tasks;
+
 
     public User getUser() {
         return user;

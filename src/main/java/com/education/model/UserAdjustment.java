@@ -1,11 +1,15 @@
 package com.education.model;
 
+import javax.validation.constraints.Email;
 import java.util.List;
 
 public class UserAdjustment {
 
     private String name;
+
+    @Email
     private String email;
+
     private boolean deleted;
 
     private List<Long> tasks;

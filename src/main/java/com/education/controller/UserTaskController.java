@@ -18,9 +18,4 @@ public class UserTaskController {
     public void setAssignee(@PathVariable(value = "taskId") long taskId, @PathVariable(value = "userId") long userId) {
         service.setAssignee(taskId, userId);
     }
-
-    @GetMapping
-    public UserTasks getAll(@PathVariable(value="userId")long id){
-        return service.getUserTasks(id);
-    }
 }

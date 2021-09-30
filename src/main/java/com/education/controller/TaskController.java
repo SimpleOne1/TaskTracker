@@ -4,6 +4,7 @@ import com.education.model.Task;
 import com.education.services.TaskService;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Collection;
 
 @RestController
@@ -27,7 +28,7 @@ public class TaskController {
     }
 
     @PostMapping
-    public Task save(@RequestBody Task task) {
+    public Task save(@Valid @RequestBody Task task) {
         return service.saveTask(task);
     }
 
