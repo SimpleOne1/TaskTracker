@@ -9,6 +9,7 @@ import com.education.persistence.UserDaoInMemImpl;
 import com.education.services.TaskService;
 import com.education.services.exceptions.UserDeletedException;
 import com.education.services.exceptions.UserNotFoundException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.*;
@@ -23,6 +24,7 @@ public class TaskServiceTest {
     private static final User ASSIGNEE_USER = new User(30L,"John","john@gmail.com",true);
     private static final Task TASK = new Task(20L,"do smth","do smth1",2L,30L);
     private final TaskService service = new TaskService(taskDAO,userDAO);
+
 
 
     @Test

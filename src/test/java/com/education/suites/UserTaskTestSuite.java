@@ -1,7 +1,8 @@
-package com.education;
+package com.education.suites;
 
 import com.education.model.Task;
 import com.education.model.User;
+import com.education.suites.TestSuite;
 import org.junit.Test;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -12,7 +13,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class UserTaskTestSuite extends TestSuite{
+public class UserTaskTestSuite extends TestSuite {
     private static final Task TASK = new Task(1L,"do smth","do smth1",1000L,null);
     private final User USER = new User(null, "Dan", "1@gmail.com", false);
 
