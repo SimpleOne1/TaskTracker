@@ -6,6 +6,7 @@ import com.education.model.UserTasks;
 import com.education.services.UserService;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,12 +32,12 @@ public class UserController {
     }
 
     @PostMapping
-    public User save(@RequestBody User user) {
+    public User save(@Valid @RequestBody User user) {
        return userService.saveUser(user);
     }
 
     @PostMapping("{id}")
-    public void update(@PathVariable(value = "id") long id, @RequestBody UserAdjustment user) {
+    public void update(@PathVariable(value = "id") long id,@Valid @RequestBody UserAdjustment user) {
         userService.edit(id, user);
     }
 

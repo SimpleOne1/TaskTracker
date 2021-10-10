@@ -1,6 +1,4 @@
 package com.education.persistence;
-
-import com.education.model.CreateUserRequest;
 import com.education.model.User;
 import org.springframework.stereotype.Repository;
 
@@ -18,7 +16,7 @@ public class UserDaoInMemImpl implements UserDAO {
 
     @Override
     public long save(User user) {
-        if (user.getId() == 0) {
+        if (user.getId() == null) {
             user.setId(id++);
         }
         userStorage.put(user.getId(), user);
@@ -36,12 +34,12 @@ public class UserDaoInMemImpl implements UserDAO {
         return old;
     }
 
-    @Override
-    public User createUserFromRequest(CreateUserRequest request) {
-        User user = new User(request.getId(), request.getName(), request.getEmail(), request.isDeleted());
-        userStorage.put(user.getId(), user);
-        return user;
-    }
+//    @Override
+//    public User createUserFromRequest(CreateUserRequest request) {
+////        User user = new User(request.getId(), request.getName(), request.getEmail(), request.isDeleted());
+////        userStorage.put(user.getId(), user);
+////        return user;
+//    }
 
     @Override
     public User get(long id) {

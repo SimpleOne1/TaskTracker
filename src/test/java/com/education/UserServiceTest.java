@@ -47,15 +47,15 @@ public class UserServiceTest {
         assertThat(user).isEqualTo(service.saveUser(user));
     }
 
-    @Test
-    public void testCreateFromRequest() {
-        ArgumentCaptor<CreateUserRequest> captor = ArgumentCaptor.forClass(CreateUserRequest.class);
-        when(userDAO.createUserFromRequest(any(CreateUserRequest.class))).thenReturn(new User(2L, "Dan", "1@gmail.com", false));
-        User result = service.createFromRequest(new CreateUserRequest(USER_ID, "Dan", "1@gmail.com", false));
-        assertThat(result).usingRecursiveComparison().isEqualTo(USER);
-        verify(userDAO).createUserFromRequest(captor.capture());
-        assertThat(captor.getValue()).usingRecursiveComparison().isEqualTo(USER_REQUEST);
-    }
+//    @Test
+//    public void testCreateFromRequest() {
+//        ArgumentCaptor<CreateUserRequest> captor = ArgumentCaptor.forClass(CreateUserRequest.class);
+//        when(userDAO.createUserFromRequest(any(CreateUserRequest.class))).thenReturn(new User(2L, "Dan", "1@gmail.com", false));
+//        User result = service.createFromRequest(new CreateUserRequest(USER_ID, "Dan", "1@gmail.com", false));
+//        assertThat(result).usingRecursiveComparison().isEqualTo(USER);
+//        verify(userDAO).createUserFromRequest(captor.capture());
+//        assertThat(captor.getValue()).usingRecursiveComparison().isEqualTo(USER_REQUEST);
+//    }
 
 
 }

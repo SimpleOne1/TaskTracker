@@ -18,5 +18,5 @@ public interface UserDAO {
 
     Collection<User> getAll();
 
-    User createUserFromRequest(CreateUserRequest request);
+//    User createUserFromRequest(CreateUserRequest request);
 }
