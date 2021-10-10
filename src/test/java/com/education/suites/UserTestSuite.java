@@ -1,7 +1,9 @@
-package com.education;
+package com.education.suites;
 
 import com.education.model.User;
+import com.education.model.UserAdjustment;
 import com.education.model.UserTasks;
+import com.education.suites.TestSuite;
 import org.junit.Test;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -13,7 +15,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class UserTestSuite extends TestSuite {
 
     private final User USER = new User(null, "Dan", "1@gmail.com", false);
-    private final User USER_EDITED = new User(null, "Max", "2@gmail.com", false);
 
     @Test
     public void createGetTest() throws Exception {
@@ -79,7 +80,11 @@ public class UserTestSuite extends TestSuite {
     @Test
     public void editTest() throws Exception {
         getByIdTest();
-        String json = asJson(USER_EDITED);
+        UserAdjustment userAdjustment = new UserAdjustment();
+        userAdjustment.setName("afff");
+        userAdjustment.setEmail("d1@gmail.com");
+        userAdjustment.setTasks(null);
+        String json = asJson(userAdjustment);
         MvcResult resultAfterSave = getMockMvc().perform(get("/users").accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -94,8 +99,9 @@ public class UserTestSuite extends TestSuite {
                 .andReturn();
         UserTasks userTasks = fromResponse(singleGetResult, UserTasks.class);
         User user = userTasks.getUser();
+        assertThat(userTasks.getTasks()).isNull();
         assertThat(user.getId()).isEqualTo(id);
-        assertThat(user.getName()).isEqualTo(USER_EDITED.getName());
-        assertThat(user.getEmail()).isEqualTo(USER_EDITED.getEmail());
+        assertThat(user.getName()).isEqualTo(userAdjustment.getName());
+        assertThat(user.getEmail()).isEqualTo(userAdjustment.getEmail());
     }
 }

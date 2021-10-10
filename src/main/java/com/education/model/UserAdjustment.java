@@ -14,6 +14,7 @@ public class UserAdjustment {
 
     private List<Long> tasks;
 
+
     public String getName() {
         return name;
     }

@@ -1,6 +1,7 @@
 package com.education.controller;
 
 import com.education.model.Task;
+import com.education.model.TaskAdjustment;
 import com.education.services.TaskService;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,8 +33,8 @@ public class TaskController {
         return service.saveTask(task);
     }
 
-    @PostMapping ("{taskId}")
-    public void update(@PathVariable(value="taskId")long taskId, @RequestBody Task task) {
+    @PostMapping("{taskId}")
+    public void update(@PathVariable(value = "taskId") long taskId, @RequestBody TaskAdjustment task) {
         service.editTask(taskId, task);
     }
 

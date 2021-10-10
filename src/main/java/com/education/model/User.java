@@ -20,14 +20,17 @@ public class User {
     private boolean deleted;
 
 
-
-    public User(Long id, String name,String email, boolean deleted) {
+    public User(Long id, String name, String email, boolean deleted) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.deleted = deleted;
     }
 
+    public User(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
 
     public User() {
     }

@@ -1,5 +1,8 @@
-package com.education;
+package com.education.suites;
 
+import com.education.ApplicationMain;
+import com.education.model.User;
+import com.education.persistence.UserDAO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +16,19 @@ import org.springframework.test.web.servlet.MvcResult;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ApplicationMain.class)
 @AutoConfigureMockMvc
-@DirtiesContext(classMode= DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public abstract class TestSuite {
 
     @Autowired
     private MockMvc mockMvc;
+    @Autowired
+    private UserDAO userDAO;
+
+    protected User createUser() {
+        User user = new User(null, "name", "123@gmail.com", false);
+        user.setId(userDAO.save(user));
+        return user;
+    }
 
     public static String asJson(Object object) throws Exception {
         return new ObjectMapper().writer().withDefaultPrettyPrinter().writeValueAsString(object);

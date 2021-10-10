@@ -1,11 +1,8 @@
 package com.education.services;
 
 
-import com.education.model.CreateUserRequest;
-import com.education.model.User;
-import com.education.model.UserTasks;
+import com.education.model.*;
 import com.education.persistence.UserDAO;
-import com.education.model.Task;
 import com.education.persistence.TaskDAO;
 import com.education.services.exceptions.TaskIllegalArgumentException;
 import com.education.services.exceptions.TaskNotFoundException;
@@ -54,20 +51,16 @@ public class TaskService {
         taskDAO.setAssignee(taskId, assigneeId);
     }
 
-    public void editTask(long id, Task task) {
-        task.setId(id);
+    public void editTask(long id, TaskAdjustment taskAdjustment) {
         Task oldTask = taskDAO.get(id);
-        if(oldTask==null){
+        if (oldTask == null) {
             throw new TaskNotFoundException(id);
         }
-        if (task.getReporter() != null) {
-            oldTask.setReporter(task.getReporter());
+        if (taskAdjustment.getDescription() != null) {
+            oldTask.setDescription(taskAdjustment.getDescription());
         }
-        if (task.getDescription() != null) {
-            oldTask.setDescription(task.getDescription());
-        }
-        if (task.getTitle() != null) {
-            oldTask.setTitle(task.getTitle());
+        if (taskAdjustment.getTitle() != null) {
+            oldTask.setTitle(taskAdjustment.getTitle());
         }
         taskDAO.edit(id, oldTask);
     }
@@ -76,9 +69,9 @@ public class TaskService {
         return taskDAO.getAll();
     }
 
-    public UserTasks getUserTasks(long userId){
+    public UserTasks getUserTasks(long userId) {
         User user = userDAO.get(userId);
-        if(user == null){
+        if (user == null) {
             throw new UserNotFoundException(userId);
         }
         List<Task> tasks = taskDAO.getByAssignee(userId);
@@ -90,7 +83,7 @@ public class TaskService {
 
     public Task get(long id) {
         Task task = taskDAO.get(id);
-        if(task == null){
+        if (task == null) {
             throw new TaskNotFoundException(id);
         }
         return task;
