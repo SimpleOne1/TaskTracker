@@ -1,91 +1,80 @@
 package com.education.services;
 
-import com.education.model.*;
-import com.education.persistence.TaskDAO;
-import com.education.persistence.UserDAO;
-import com.education.services.exceptions.TaskNotFoundException;
-import com.education.services.exceptions.UniqueEmailException;
+import com.education.repository.ChangeableUser;
+import com.education.repository.entity.UserEntity;
+import com.education.repository.repo.UserRepository;
+import com.education.services.exceptions.UserDeletedException;
 import com.education.services.exceptions.UserNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
 
 @Service
 public class UserService {
 
-    private final UserDAO userDAO;
-    private final TaskDAO taskDAO;
+    private final UserRepository repository;
 
-    public UserService(UserDAO userDAO, TaskDAO taskDAO) {
-        this.userDAO = userDAO;
-        this.taskDAO = taskDAO;
+    public UserService(UserRepository repository) {
+        this.repository = repository;
     }
 
-    public User saveUser(User user) {
-        User byEmail = userDAO.getByEmail(user.getEmail());
-        if (byEmail != null) {
-            throw new UniqueEmailException();
+    public UserEntity get(Long id) {
+        UserEntity user = repository.get(id);
+        if (user == null) {
+            throw new UserNotFoundException(id);
         }
-        long id = userDAO.save(user);
-        user.setId(id);
-        return user;
+        if (user.isDeleted()) {
+            throw new UserDeletedException(id);
+        }
+        return repository.get(id);
     }
 
-    public List<User> getAll() {
-        ArrayList<User> list = new ArrayList<>();
-        for (User user : userDAO.getAll()) {
-            if (!user.isDeleted()) {
-                list.add(user);
-            }
+    public List<UserEntity> getAll() {
+        return repository.getAll();
+    }
+
+    public UserEntity save(UserEntity userEntity) {
+        return repository.save(userEntity);
+    }
+
+    public UserEntity edit(Long id, ChangeableUser user) {
+        UserEntity entity = repository.get(id);
+        if(entity==null){
+            throw new UserNotFoundException(id);
         }
-        return list;
+        if(user.getName()!=null){
+            entity.setName(user.getName());
+        }
+        if(user.getEmail()!=null){
+            entity.setEmail(user.getEmail());
+        }
+        if(user.getPassword()!=null){
+            entity.setPassword(user.getPassword());
+        }
+        return repository.save(entity);
     }
 
     public void delete(Long id) {
-        User user = userDAO.get(id);
-        if (user == null ) {
+        UserEntity user = repository.get(id);
+        if (user == null) {
             throw new UserNotFoundException(id);
         }
-        user.setDeleted(true);
-        userDAO.edit(id, user);
+        repository.delete(id);
     }
 
-    public UserTasks get(Long id) {
-        UserTasks userTasks = new UserTasks();
-        User user = userDAO.get(id);
-        if (user == null || user.isDeleted()) {
+    public UserEntity addRole(Long id, String role) {
+        UserEntity user = repository.get(id);
+        if (user == null) {
             throw new UserNotFoundException(id);
         }
-        userTasks.setUser(user);
-        List<Task> tasks = taskDAO.getByAssignee(id);
-        userTasks.setTasks(tasks);
-        return userTasks;
+        return repository.addRole(id, role);
     }
 
-    public void edit(Long id, UserAdjustment user) {
-        User oldUser = userDAO.get(id);
-        if (oldUser == null) {
+    public UserEntity delRole(Long id, String role) {
+        UserEntity user = repository.get(id);
+        if (user == null) {
             throw new UserNotFoundException(id);
         }
-        if (user.getEmail() != null) {
-            User byEmail = userDAO.getByEmail(user.getEmail());
-            if (byEmail != null) {
-                if (Objects.equals(byEmail.getId(), id)) {
-                    throw new UniqueEmailException("email duplicated");
-                }
-                throw new UniqueEmailException("email is same");
-            } else {
-                oldUser.setEmail(user.getEmail());
-            }
-        }
-        if (user.getName() != null) {
-            oldUser.setName(user.getName());
-        }
-        userDAO.edit(id, oldUser);
+        return repository.delRole(id,role);
     }
-
-//    public User createFromRequest(CreateUserRequest request) {
-//        ;
-//        return userDAO.createUserFromRequest(request);
-//    }
 }
