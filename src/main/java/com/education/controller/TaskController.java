@@ -1,12 +1,8 @@
 package com.education.controller;
-
-import com.education.model.Task;
-import com.education.model.TaskAdjustment;
+import com.education.repository.entity.TaskEntity;
 import com.education.services.TaskService;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("tasks")
@@ -18,24 +14,13 @@ public class TaskController {
     }
 
     @GetMapping
-    public Collection<Task> getAll() {
-        System.out.println(service.getAll().toString());
+    public List<TaskEntity> getAll() {
         return service.getAll();
     }
 
     @GetMapping("{taskId}")
-    public Task getTask(@PathVariable(value = "taskId") long id) {
+    public TaskEntity getTask(@PathVariable(value = "taskId") long id) {
         return service.get(id);
-    }
-
-    @PostMapping
-    public Task save(@Valid @RequestBody Task task) {
-        return service.saveTask(task);
-    }
-
-    @PostMapping("{taskId}")
-    public void update(@PathVariable(value = "taskId") long taskId, @RequestBody TaskAdjustment task) {
-        service.editTask(taskId, task);
     }
 
 }

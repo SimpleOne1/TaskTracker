@@ -32,15 +32,15 @@ public class ProjectController {
         return service.create(project);
     }
     @PostMapping("{id}")
-    public void update(@PathVariable(value = "id") long id,@RequestBody ProjectToCreate project) {//todo change userEntity to UserAdjustment
+    public void update(@PathVariable(value = "id") long id,@RequestBody ProjectToCreate project) {
         service.edit(id, project);
     }
 
-   @PostMapping("{id}/teams")
+   @PostMapping("/addteam/{id}")
     private  void addTeam(@PathVariable(value = "id") long id,@RequestBody Long teamId){
         service.addTeam(id,teamId);
    }
-    @DeleteMapping("{id}/teams")
+    @DeleteMapping("/addteam/{id}")
     private  void delTeam(@PathVariable(value = "id") long id,@RequestBody Long teamId){
         service.delTeam(id,teamId);
     }

@@ -1,40 +1,36 @@
 package com.education.repository.entity;
-
 import javax.persistence.*;
-import java.util.List;
+
+
 @Entity
+@Table(name = "Tasks")
 public class TaskEntity {
     private static final int START_SEQ = 100000;
     @Id
-    @SequenceGenerator(name="global_seq_task",sequenceName = "global_seq_task",allocationSize = 1,initialValue = START_SEQ)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "global_seq_task")
+    @SequenceGenerator(name = "global_seq_task", sequenceName = "global_seq_task", allocationSize = 1, initialValue = START_SEQ)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "global_seq_task")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="PROJECT_ID")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "project_id")
     private ProjectEntity project;
 
     @Column(nullable = false)
     private TaskType type;
 
-    @OneToMany
-    @JoinTable(
-            name="CHILD_TASKS",
-            joinColumns = {@JoinColumn(name="TASK_ID",referencedColumnName = "ID")},
-            inverseJoinColumns = {@JoinColumn(name="CHILD_ID",referencedColumnName = "ID",unique = true)}
-    )
-    private List<TaskEntity> childTasks;
-
     @Column(nullable = false)
     private String title;
     @Column(nullable = false)
     private String description;
-    @Column(nullable = false)
-    private Long reporterId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "REPORTER_USER")
+    private UserEntity reporter;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="ASSIGNEE_USER")
+    @JoinColumn(name = "ASSIGNEE_USER")
+
     private UserEntity assignee;//можно сделать ссылкой на пользователя
 
     public Long getId() {
@@ -61,13 +57,6 @@ public class TaskEntity {
         this.type = type;
     }
 
-    public List<TaskEntity> getChildTasks() {
-        return childTasks;
-    }
-
-    public void setChildTasks(List<TaskEntity> childTasks) {
-        this.childTasks = childTasks;
-    }
 
     public String getTitle() {
         return title;
@@ -85,12 +74,12 @@ public class TaskEntity {
         this.description = description;
     }
 
-    public Long getReporterId() {
-        return reporterId;
+    public UserEntity getReporter() {
+        return reporter;
     }
 
-    public void setReporterId(Long reporterId) {
-        this.reporterId = reporterId;
+    public void setReporter(UserEntity reporter) {
+        this.reporter = reporter;
     }
 
     public UserEntity getAssignee() {

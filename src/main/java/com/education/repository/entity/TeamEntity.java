@@ -1,6 +1,7 @@
 package com.education.repository.entity;
-
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 @Entity
 @Table(name="teams")
@@ -10,11 +11,14 @@ public class TeamEntity {
     @SequenceGenerator(name="global_seq_team",sequenceName = "global_seq_team",allocationSize = 1,initialValue = START_SEQ)
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "global_seq_team")
     private Long id;
-    @Column(nullable = false)
+    @Column(nullable = false,name="TEAM_NAME")
     private String name;
 
-    @OneToMany(mappedBy = "team")
-    private List<UserEntity> members;
+    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @JoinColumn(name="team_id")
+    @JsonManagedReference
+    private List<UserEntity> members = new ArrayList<UserEntity>();
+
 
     @ManyToMany
     @JoinTable(
@@ -22,7 +26,7 @@ public class TeamEntity {
             joinColumns = @JoinColumn(name="TEAM_ID",referencedColumnName = "ID"),
             inverseJoinColumns = @JoinColumn(name="PROJECT_ID",referencedColumnName = "ID")
     )
-    private List<ProjectEntity> projects;
+    private List<ProjectEntity> projects = new ArrayList<>();
 
     public Long getId() {
         return id;

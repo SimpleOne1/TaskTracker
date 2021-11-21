@@ -2,6 +2,7 @@ package com.education.repository.repo;
 
 import com.education.repository.entity.ProjectEntity;
 import com.education.repository.entity.TeamEntity;
+import com.education.repository.entity.UserEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,27 +16,34 @@ public class TeamRepository {
     @PersistenceContext
     private EntityManager em;
 
-    public TeamEntity get(Long id){
-        return em.find(TeamEntity.class,id);
+    public TeamEntity get(Long id) {
+        return em.find(TeamEntity.class, id);
     }
 
-    public List<TeamEntity> getAll(){
-        return em.createQuery("Select t from TeamEntity t",TeamEntity.class).getResultList();
+    public List<TeamEntity> getAll() {
+        return em.createQuery("Select t from TeamEntity t", TeamEntity.class).getResultList();
     }
 
-    public TeamEntity create(TeamEntity teamEntity){//todo add different dto for editing with only name changing
-        if(teamEntity.getId()==null){
+    public TeamEntity create(TeamEntity teamEntity) {
+        if (teamEntity.getId() == null) {
             em.persist(teamEntity);
             return teamEntity;
-        }
-        else{
+        } else {
             return em.merge(teamEntity);
         }
-    };
+    }
 
-    public void delete(Long id){
-        TeamEntity reference = em.getReference(TeamEntity.class,id);
+    ;
+
+    public void delete(Long id) {
+        TeamEntity reference = em.getReference(TeamEntity.class, id);
         em.remove(reference);
+    }
+
+    public TeamEntity addUser(TeamEntity teamEntity, UserEntity userEntity) {
+        teamEntity.getMembers().add(userEntity);
+        em.merge(teamEntity);
+        return teamEntity;
     }
 
 }

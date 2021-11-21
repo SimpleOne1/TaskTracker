@@ -1,93 +1,83 @@
 package com.education.services;
 
-
-import com.education.model.*;
-import com.education.persistence.UserDAO;
-import com.education.persistence.TaskDAO;
-import com.education.services.exceptions.TaskIllegalArgumentException;
-import com.education.services.exceptions.TaskNotFoundException;
-import com.education.services.exceptions.UserDeletedException;
-import com.education.services.exceptions.UserNotFoundException;
+import com.education.repository.ChangeableTask;
+import com.education.repository.entity.ProjectEntity;
+import com.education.repository.entity.TaskEntity;
+import com.education.repository.entity.UserEntity;
+import com.education.repository.repo.ProjectRepository;
+import com.education.repository.repo.TaskRepository;
+import com.education.repository.repo.UserRepository;
+import com.education.services.exceptions.*;
 import org.springframework.stereotype.Service;
-
-import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class TaskService {
+    private final TaskRepository taskRepository;
+    private final UserRepository userRepository;
+    private final ProjectRepository projectRepository;
 
-    private final TaskDAO taskDAO;
-    private final UserDAO userDAO;
-
-    public TaskService(TaskDAO taskDAO, UserDAO userDAO) {
-        this.taskDAO = taskDAO;
-        this.userDAO = userDAO;
+    public TaskService(TaskRepository taskRepository, UserRepository userRepository, ProjectRepository projectRepository) {
+        this.taskRepository = taskRepository;
+        this.userRepository = userRepository;
+        this.projectRepository = projectRepository;
     }
 
-    public Task saveTask(Task task) {
-        if (task.getReporter() == null) {
-            throw new TaskIllegalArgumentException();
-        }
-        Long reporterId = task.getReporter();
-        if (userDAO.get(reporterId).isDeleted()) {
-            throw new UserDeletedException(reporterId);
-        }
-        if (task.getAssignee() != null && userDAO.get(task.getAssignee()).isDeleted()) {
-            throw new UserDeletedException(task.getAssignee());
-        }
-        if (task.getDescription() == null || task.getTitle() == null) {
-            throw new TaskIllegalArgumentException();
-        }
-        long savedId = taskDAO.save(task);
-        task.setId(savedId);
-        return task;
-    }
-
-    public void setAssignee(Long taskId, Long assigneeId) {
-        if (assigneeId != null && userDAO.get(assigneeId).isDeleted()) {
-            throw new UserDeletedException(assigneeId);
-        }
-        taskDAO.setAssignee(taskId, assigneeId);
-    }
-
-    public void editTask(long id, TaskAdjustment taskAdjustment) {
-        Task oldTask = taskDAO.get(id);
-        if (oldTask == null) {
-            throw new TaskNotFoundException(id);
-        }
-        if (taskAdjustment.getDescription() != null) {
-            oldTask.setDescription(taskAdjustment.getDescription());
-        }
-        if (taskAdjustment.getTitle() != null) {
-            oldTask.setTitle(taskAdjustment.getTitle());
-        }
-        taskDAO.edit(id, oldTask);
-    }
-
-    public Collection<Task> getAll() {
-        return taskDAO.getAll();
-    }
-
-    public UserTasks getUserTasks(long userId) {
-        User user = userDAO.get(userId);
-        if (user == null) {
-            throw new UserNotFoundException(userId);
-        }
-        List<Task> tasks = taskDAO.getByAssignee(userId);
-        UserTasks userTasks = new UserTasks();
-        userTasks.setUser(user);
-        userTasks.setTasks(tasks);
-        return userTasks;
-    }
-
-    public Task get(long id) {
-        Task task = taskDAO.get(id);
+    public TaskEntity get(Long id) {
+        TaskEntity task = taskRepository.get(id);
         if (task == null) {
             throw new TaskNotFoundException(id);
         }
-        return task;
+        return taskRepository.get(id);
     }
 
+    public List<TaskEntity> getAll() {
+        return taskRepository.getAll();
+    }
 
+    public TaskEntity save(Long projectId, Long reporterId, TaskEntity taskEntity) {
+        UserEntity reporter = userRepository.get(reporterId);
+        if (reporter == null) {
+            throw new UserNotFoundException(reporterId);
+        }
+        if (reporter.getTeam().getProjects().isEmpty()) {
+            throw new IllegalArgumentException("Reporter assigned for task creation is not member of any project");
+        }
+        ProjectEntity projectEntity = projectRepository.get(projectId);
+        if (reporter.getTeam().getProjects().contains(projectEntity)) {
+            taskEntity.setProject(projectRepository.get(projectId));
+        } else {
+            throw new ProjectNotFoundException(projectId);
+        }
+        taskEntity.setReporter(reporter);
+        return taskRepository.save(taskEntity);
+    }
+
+    public TaskEntity edit(Long id, ChangeableTask task) {
+        TaskEntity entity = taskRepository.get(id);
+        if (entity == null) {
+            throw new TaskNotFoundException(id);
+        }
+        if (task.getDescription() != null) {
+            entity.setDescription(task.getDescription());
+        }
+        if (task.getTitle() != null) {
+            entity.setTitle(task.getTitle());
+        }
+        return taskRepository.save(entity);
+    }
+
+    public TaskEntity setAssignee(Long taskId, Long assigneeId) {
+        if (taskRepository.get(taskId) == null) {
+            throw new TaskNotFoundException(taskId);
+        }
+        if (userRepository.get(assigneeId) == null) {
+            throw new UserNotFoundException(assigneeId);
+        }
+        if (userRepository.get(assigneeId).getTeam().getProjects().contains(taskRepository.get(taskId).getProject())) {
+            return taskRepository.setAssignee(taskId, assigneeId);
+        } else {
+            throw new UserNotFoundException(assigneeId);
+        }
+    }
 }

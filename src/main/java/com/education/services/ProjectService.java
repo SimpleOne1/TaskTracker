@@ -22,41 +22,41 @@ public class ProjectService {
         this.teamRepository = teamRepository;
     }
 
-    public ProjectEntity get(Long id){
-      ProjectEntity project=projectRepository.get(id);
-      if(project == null){
-          throw new ProjectNotFoundException(id);
-      }
-      return project;
+    public ProjectEntity get(Long id) {
+        ProjectEntity project = projectRepository.get(id);
+        if (project == null) {
+            throw new ProjectNotFoundException(id);
+        }
+        return project;
     }
 
-    public List<ProjectEntity> getAll(){
+    public List<ProjectEntity> getAll() {
         return projectRepository.getAll();
     }
 
-    public ProjectEntity create(ProjectToCreate projectToCreate){
+    public ProjectEntity create(ProjectToCreate projectToCreate) {
         ProjectEntity project = new ProjectEntity();
         project.setName(projectToCreate.getName());
         return projectRepository.create(project);
     }
 
-    public ProjectEntity edit(Long id,ProjectToCreate project){
+    public ProjectEntity edit(Long id, ProjectToCreate project) {
         ProjectEntity p = projectRepository.get(id);
         p.setName(project.getName());
         return projectRepository.create(p);
     }
 
-    public ProjectEntity addTeam(Long projectId,Long teamId){
-        if(teamRepository.get(teamId)==null){
+    public ProjectEntity addTeam(Long projectId, Long teamId) {
+        if (teamRepository.get(teamId) == null) {
             throw new TeamNotFoundException(teamId);
         }
-        return projectRepository.adTeam(projectId,teamId);
+        return projectRepository.adTeam(projectId, teamId);
     }
 
-    public ProjectEntity delTeam(Long projectId,Long teamId){
-        if(teamRepository.get(teamId)==null){
+    public ProjectEntity delTeam(Long projectId, Long teamId) {
+        if (teamRepository.get(teamId) == null) {
             throw new TeamNotFoundException(teamId);
         }
-        return projectRepository.delTeam(projectId,teamId);
+        return projectRepository.delTeam(projectId, teamId);
     }
 }

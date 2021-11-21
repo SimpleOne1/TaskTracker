@@ -13,6 +13,7 @@ import com.education.services.exceptions.TeamNotFoundException;
 import com.education.services.exceptions.UserNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,33 +24,35 @@ public class TeamService {
     private final TeamRepository teamRepository;
     private final ProjectRepository projectRepository;
 
-    public TeamService(UserRepository userRepository, TeamRepository teamRepository,ProjectRepository projectRepository) {
+    public TeamService(UserRepository userRepository, TeamRepository teamRepository, ProjectRepository projectRepository) {
         this.userRepository = userRepository;
         this.teamRepository = teamRepository;
-        this.projectRepository=projectRepository;
+        this.projectRepository = projectRepository;
     }
 
-    public TeamEntity create(TeamCreating team){
+    public TeamEntity create(TeamCreating team) {
         TeamEntity teamEntity = new TeamEntity();
+        teamEntity.setName(team.getName());
         List<Long> usersInTeam = team.getUserIds();
-        if(usersInTeam != null){
-            for(Long id : usersInTeam){
+        if (usersInTeam != null) {
+            for (Long id : usersInTeam) {
                 UserEntity user = userRepository.get(id);
-                if(user == null){
+                if (user == null) {
                     throw new UserNotFoundException(id);
                 }
-                if(!Objects.equals(user.getRole(), "manager") && !Objects.equals(user.getRole(), "admin"))
-                {
+                if (!Objects.equals(user.getRole(), "manager") && !Objects.equals(user.getRole(), "admin")) {
                     teamEntity.getMembers().add(userRepository.get(id));
                 }
             }
         }
         List<Long> projects = team.getProjectIds();
-        if(projects!=null){
-            for(Long id : projects){
-                if(projectRepository.get(id)==null){
+        if (projects != null) {
+            for (Long id : projects) {
+                if (projectRepository.get(id) == null) {
                     throw new ProjectNotFoundException(id);
                 }
+                ProjectEntity projectEntity = projectRepository.get(id);
+                List<ProjectEntity> list = teamEntity.getProjects();
                 teamEntity.getProjects().add(projectRepository.get(id));
             }
         }
@@ -57,34 +60,46 @@ public class TeamService {
         return teamRepository.create(teamEntity);
     }
 
-    public TeamEntity edit(Long id, TeamCreating team){
-       TeamEntity entity = teamRepository.get(id);
-       entity.setName(team.getName());
-       return teamRepository.create(entity);
+    public TeamEntity edit(Long id, TeamCreating team) {
+        TeamEntity entity = teamRepository.get(id);
+        entity.setName(team.getName());
+        return teamRepository.create(entity);
     }
 
-    public void delete(Long id) throws Exception{
+    public void delete(Long id) throws Exception {
         TeamEntity entity = teamRepository.get(id);
-        if(entity==null){
+        if (entity == null) {
             throw new TeamNotFoundException(id);
         }
-        if(entity.getProjects()!=null && entity.getMembers()!=null){
+        if (entity.getProjects() != null && entity.getMembers() != null) {
             teamRepository.delete(id);
-        }
-        else{
+        } else {
             throw new Exception("Can't delete team with active members");
         }
     }
 
     public TeamEntity get(Long id) {
         TeamEntity entity = teamRepository.get(id);
-        if(entity==null){
+        if (entity == null) {
             throw new TeamNotFoundException(id);
         }
         return entity;
     }
 
-    public List<TeamEntity> getAll(){
+    public TeamEntity addUser(Long teamId, Long userId) {
+        TeamEntity team = teamRepository.get(teamId);
+        UserEntity entity = userRepository.get(userId);
+        if (team == null) {
+            throw new TeamNotFoundException(teamId);
+        }
+        if (entity == null) {
+            throw new UserNotFoundException(userId);
+        }
+
+        return teamRepository.addUser(team, entity);
+    }
+
+    public List<TeamEntity> getAll() {
         return teamRepository.getAll();
     }
 }

@@ -7,16 +7,6 @@ public class TeamCreating {
     private List<Long> userIds;
     private List<Long> projectIds;
 
-    public TeamCreating(String name) {
-        this.name = name;
-    }
-
-    public TeamCreating(String name, List<Long> userIds, List<Long> projectIds) {
-        this.name = name;
-        this.userIds = userIds;
-        this.projectIds = projectIds;
-    }
-
     public String getName() {
         return name;
     }

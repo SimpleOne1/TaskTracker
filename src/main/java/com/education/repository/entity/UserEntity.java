@@ -1,18 +1,17 @@
 package com.education.repository.entity;
-
-
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
-
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+
 @Entity
 @Table(name="users")
 @NamedQueries(
         @NamedQuery(name=UserEntity.GET_ALL,query = "SELECT u from UserEntity u")
 )
+
 public class UserEntity {
     public static final int START_SEQ = 100;
     public static final String GET_ALL="Users.getAll";
@@ -29,12 +28,18 @@ public class UserEntity {
     private  String password;
     @Column
     private String role;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="TEAM_ID")
+
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "team_id",insertable = false,updatable = false)
+    @JsonBackReference
     private  TeamEntity team;
 
-    @OneToMany(mappedBy = "assignee")
-    private List<TaskEntity> tasks ;
+    @OneToMany(mappedBy = "assignee",cascade = CascadeType.ALL)
+    private List<TaskEntity> tasks = new ArrayList<>();
+
+    @OneToMany(mappedBy = "reporter",cascade = CascadeType.ALL)
+    private List<TaskEntity> createdTasks = new ArrayList<>();
 
     @Column
     private boolean deleted = Boolean.FALSE;
@@ -71,7 +76,13 @@ public class UserEntity {
         this.password = password;
     }
 
+    public List<TaskEntity> getCreatedTasks() {
+        return createdTasks;
+    }
 
+    public void setCreatedTasks(List<TaskEntity> createdTasks) {
+        this.createdTasks = createdTasks;
+    }
 
     public TeamEntity getTeam() {
         return team;

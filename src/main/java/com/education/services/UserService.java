@@ -39,16 +39,16 @@ public class UserService {
 
     public UserEntity edit(Long id, ChangeableUser user) {
         UserEntity entity = repository.get(id);
-        if(entity==null){
+        if (entity == null) {
             throw new UserNotFoundException(id);
         }
-        if(user.getName()!=null){
+        if (user.getName() != null) {
             entity.setName(user.getName());
         }
-        if(user.getEmail()!=null){
+        if (user.getEmail() != null) {
             entity.setEmail(user.getEmail());
         }
-        if(user.getPassword()!=null){
+        if (user.getPassword() != null) {
             entity.setPassword(user.getPassword());
         }
         return repository.save(entity);
@@ -75,6 +75,6 @@ public class UserService {
         if (user == null) {
             throw new UserNotFoundException(id);
         }
-        return repository.delRole(id,role);
+        return repository.delRole(id, role);
     }
 }

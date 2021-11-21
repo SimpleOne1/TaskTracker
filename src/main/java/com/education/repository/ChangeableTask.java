@@ -1,19 +1,8 @@
-package com.education.model;
+package com.education.repository;
 
-import org.springframework.lang.Nullable;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
-public class TaskAdjustment {
-
+public class ChangeableTask {
     private String title;
     private String description;
-
-    public TaskAdjustment(String title, String description) {
-        this.title = title;
-        this.description = description;
-    }
 
     public String getTitle() {
         return title;
